@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>ChatGPT-3.5 Chat</title>
+</head>
+<body>
+    <div class="column-bar-container roboto-regular">
+        <div class="f-row-left column-bar-sections">
+            <div class="btn btn-right"><span>Utama</span></div>
+            <div class="btn btn-right"><span>Silibus</span></div>
+            <div class="btn btn-right"><span>Penilaian</span></div>
+        </div>
+        <div class="brand-container">
+            <img src="./img/ezididik.png" alt="" class="brand">
+        </div>
+        <div class="f-row-right column-bar-sections">
+            <div class="btn btn-left"><span>Log Masuk</span></div>
+            <div class="btn btn-left"><span>Daftar</span></div>
+            <div class="btn btn-left"><span>Jadual</span></div>
+        </div>
+    </div>
+
+    <div class="layout">
+        <div class="main">
+            <div class="sections">
+                <div class="section">
+
+                </div>
+                <div class="section padding-top-xtra">
+                    <div class="panel">
+                        <h3>Matapelajaran</h3>
+                        <div class="card" id="subject-thumbs">
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+                    <div class="section">
+                        <div class="panel f-1">
+                            <div class="card">
+                                <div class="f-row-left item-centered-vertical">
+                                    <img class="ezi-icon" id="subject-small-icon" src="./img/subjects/rocket.png" alt="">
+                                    <h5 id="subject-name"></h5>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="topics" id="topics">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel f-1">
+                            <div class="f-row-left">
+                                <img class="thumb" src="./img/ezi-logo.png" alt="">
+                                <div class="card">
+                                    <p id="botrespond">Hai! Saya Cikgu Ezi.</p>
+                                </div>
+                            </div>
+                            <div class="f-row-left">
+                                <div class="card">
+                                    <p id="botnotes"></p>
+                                </div>
+                            </div>
+                            <div class="f-row-left">
+                                <div class="card">
+                                    <p id="botnext">
+                                        <div class="f-row-right f-1 f-gap-5">
+                                            <div class="btn button">Seterusnya</div>
+                                            <div class="btn button">Uji Kefahaman</div>
+                                            <div class="btn button">Kuiz</div>
+                                        </div>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+<!--
+    <h1>ChatGPT-3.5 Chat Interface</h1>
+    <form id="chat-form">
+        <input type="text" id="message-input" placeholder="Type your message here">
+        <button type="submit">Send</button>
+    </form>
+    <div id="chat-output"></div>
+
+ -->   
+    <script src="./assets/jquery/3.6.0/jquery-3.6.0.min.js"></script>
+    <script src="./assets/d3/v7/d3.v7.min.js"></script>
+
+    <script>
+        const subjects = [
+            {
+                id: 1,
+                subject: 'SAINS',
+                shortform: 'SC',
+                level: 'Darjah 6',
+                icon: 'rocket'
+            },
+            {
+                id: 2,
+                subject: 'MATEMATIK',
+                shortform: 'MATH',
+                level: 'Darjah 6',
+                icon: 'link'
+            },
+            {
+                id: 3,
+                subject: 'REKA BENTUK TEKNOLOGI',
+                shortform: 'RBT',
+                level: 'Darjah 6',
+                icon: 'robot_1'
+            },
+            {
+                id: 4,
+                subject: 'SEJARAH',
+                shortform: 'SEJ',
+                level: 'Darjah 6',
+                icon: 'dino'
+            },
+            {
+                id: 5,
+                subject: 'BAHASA MELAYU',
+                shortform: 'BM',
+                level: 'Darjah 6',
+                icon: 'teacher'
+            },
+            {
+                id: 6,
+                subject: 'BAHASA INGGERIS',
+                shortform: 'BI',
+                level: 'Darjah 6',
+                icon: 'teacher'
+            },
+        ];
+
+    </script>
+
+    <script>
+        $(document).ready(()=>{
+            var thumb = d3.select('#subject-thumbs');
+            thumb.selectAll('*').remove();
+            thumb.selectAll('.article').data(subjects).enter().append('div').call(o=>{
+                ar = o.attr('class', 'article');
+                ar.append('img').attr('class','thumb').attr('src',d=>`./img/subjects/${d.icon}.png`);
+                ar.append('h4').text(d=>d.subject);
+                ar.append('h4').text(d=>d.level);
+
+                ar.on('click', async (e, d)=>{
+                    console.log(d);
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: `
+                            your name is Cikgu Ezi.
+                            you are a '${d.subject} ${d.level}' teacher.
+                            as a teacher, your task is to guide your student to understant topics in the syllabus. As a Malaysian teacher, use formal Bahasa Malaysia to answer all the questions.
+                            begin with introducing yourself and list all the topics in '${d.subject} ${d.level}' DSKP syllabus.
+                            return the answer in the following format:
+                            {
+                                "introduction" : '',
+                                "topics": []
+                            }
+                            ` })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const _msg = data.message;
+
+                        const msg = JSON.parse(_msg);
+
+                        console.log(msg);
+
+                        d3.select('#subject-name').text(`${d.subject} ${d.level}`);
+                        d3.select('#botrespond').text(msg.introduction);
+                        d3.select('#subject-small-icon').attr('src',`./img/subjects/${d.icon}.png`)
+                        
+                        r = d3.select('#topics');
+                        r.selectAll('*').remove();
+                        r.selectAll('.topic').data(msg.topics).enter().append('div').call(x=>{
+                            x.attr('class', 'f-row-left item-centered-vertical topic');
+                            x.append('img').attr('class','ezi-icon').attr('src', './img/subjects/sc.png');
+                            x.append('p').attr('class','px-10').text(d=>d);
+
+                            x.on('click', async (ex, dx)=>{
+                                const resx = await fetch('/chat', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ message: `
+                                        please tech me about '${dx}'.
+                                        give a brief introduction of the topic, important notes in points, example if necessary.
+                                        please use formal Bahasa Malaysia.
+                                        return the answer in html as the following format:
+                                        <div class="lecture">
+                                        
+                                        </div>
+                                        ` })
+                                });
+
+                                if (resx.ok) {
+                                    const _nota = await resx.json();
+                                    const nota = _nota.message;
+
+                                    d3.select('#botrespond').text(dx);
+                                    d3.select('#botnotes').html(nota);
+                                }else{
+                                    console.error('Error from chat API');
+                                    chatOutput.innerHTML += `<div>Error connecting to the chat service</div>`;
+                                }
+                            })
+                        })
+                        
+                    } else {
+                        console.error('Error from chat API');
+                        chatOutput.innerHTML += `<div>Error connecting to the chat service</div>`;
+                    }
+                    
+                }); //end click
+            });
+        })
+    </script>
+
+    <script>
+        const form = document.getElementById('chat-form');
+        const chatOutput = document.getElementById('chat-output');
+    
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const messageInput = document.getElementById('message-input');
+            const userMessage = messageInput.value;
+    
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: userMessage })
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                const botMessage = data.message;
+                chatOutput.innerHTML += `<div>User: ${userMessage}</div>`;
+                chatOutput.innerHTML += `<div>Bot: ${botMessage}</div>`;
+            } else {
+                console.error('Error from chat API');
+                chatOutput.innerHTML += `<div>Error connecting to the chat service</div>`;
+            }
+    
+            messageInput.value = ''; // Clear the input after sending
+        });
+    </script>
+    
+</body>
+</html>
