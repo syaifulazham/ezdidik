@@ -99,7 +99,98 @@
                 subject: 'SAINS',
                 shortform: 'SC',
                 level: 'Tahun 6',
-                icon: 'rocket'
+                icon: 'rocket',
+                syllabus: `
+UNIT 1: KEMAHIRAN SAINTIFIK
+Kemahiran Proses Sains
+
+UNIT 2: MANUSIA
+Pembiakan Manusia
+Organ Pembiakan Lelaki
+Organ Pembiakan Perempuan 
+Proses Persenyawaan Manusia hingga Bayi Dilahirkan
+Kepentingan Pembiakan kepada Manusia
+Sistem Saraf Manusia
+Jenis Sistem Saraf Manusia
+Fungsi Sistem Saraf Manusia
+Kegagalan Fungsi Sistem Saraf Periferi
+Menjaga Sistem Saraf
+
+UNIT 3: MIKROORGANISMA
+Mikroorganisma
+Proses Hidup Mikroorganisma
+Faktor-faktor yang Mempengaruhi Pertumbuhan Mikroorganisma
+Kegunaan Mikroorganisma
+Keburukan Mikroorganisma
+
+UNIT 4: INTERAKSI ANTARA HIDUPAN
+Interaksi antara Hidupan
+Interaksi antara Haiwan
+Interaksi antara Tumbuhan
+Kepentingan Interaksi antara Hidupan kepada Ekosistem
+
+UNIT 5: PEMELIHARAAN DAN PEMULIHARAAN 
+Haiwan yang Telah Pupus
+Haiwan dan Tumbuhan yang Diancam Kepupusan
+Faktor-faktor yang Menyebabkan Haiwan dan Tumbuhan Diancam Kepupusan
+Pemeliharaan Haiwan dan Tumbuhan
+Pemuliharaan Haiwan dan Tumbuhan 
+Kepentingan Pemeliharaan dan Pemuliharaan
+
+UNIT 6: DAYA
+Daya
+Kesan Daya
+Daya Geseran
+Kesan Daya Geseran
+Faktor-faktor yang Mempengaruhi Daya Geseran
+Daya Geseran dalam Kehidupan Harian
+Tekanan Udara
+Hubung Kait antara Tekanan Udara dengan Ketinggian
+Aplikasi Tekanan Udara
+
+UNIT 7: KELAJUAN
+Unit Kelajuan
+Hubungan antara Kelajuan, Jarak dan Masa
+Mengira Kelajuan, Jarak dan Masa
+
+UNIT 8: TEKNOLOGI PENGAWETAN MAKANAN
+Kerosakan Makanan
+Pengawetan Makanan
+Projek Pengawetan Makanan
+Kepentingan Teknologi Pengawetan Makanan
+Gabungan Kaedah Pengawetan Makanan
+
+UNIT 9: BAHAN BUANGAN
+Pengurusan Bahan Buangan
+Bahan Buangan Terbiodegradasi dan Bahan Buangan Tidak Terbiodegradasi
+Penggunaan Bahan Terbiodegradasi dan Bahan Tidak Terbiodegradasi
+Pengurusan Bahan Buangan Secara Terancang
+
+UNIT 10: GERHANA
+Gerhana Bulan
+Gerhana Matahari
+Hubung kait antara Gerhana dengan Sifat Cahaya
+Keadaan di Bumi Semasa Gerhana
+
+UNIT 11: GALAKSI
+Kenali Galaksi
+Galaksi Bima Sakti
+Saiz Sistem Suria di dalam Galaksi Bima Sakti
+
+UNIT 12: KESTABILAN DAN KEKUATAN
+Kestabilan Objek dan Binaan
+Faktor-faktor yang Mempengaruhi Kestabilan Objek dan Binaan
+Kekuatan Objek dan Binaan
+Faktor-faktor yang Mempengaruhi Kekuatan Objek dan Binaan
+Kepentingan Binaan yang Kuat dan Stabil
+Mencipta Model Binaan: Bangku Botol
+
+UNIT 13: TEKNOLOGI
+Teknologi dan Kepentingannya
+Perkembangan Teknologi
+Kebaikan dan Keburukan Teknologi
+
+                `
             },
             {
                 id: 2,
@@ -152,6 +243,7 @@
 
                 ar.on('click', async (e, d)=>{
                     console.log(d);
+                    var syllabus = d.syllabus? `Following are the topics in the syllabus:\n ${d.syllabus}` : '';
                     const response = await fetch('/chat', {
                         method: 'POST',
                         headers: {
@@ -161,7 +253,8 @@
                             your name is Cikgu Ezi.
                             you are a '${d.subject} ${d.level}' teacher.
                             as a teacher, your task is to guide your student to understant topics in the syllabus. As a Malaysian teacher, use formal Bahasa Malaysia to answer all the questions.
-                            begin with introducing yourself and list all the topics in '${d.subject} ${d.level}' DSKP syllabus.
+                            begin with greeting and introducing yourself in a non-formal approach and list all the topics in '${d.subject} ${d.level}' DSKP syllabus.
+                            ${syllabus}
                             return the answer in the following format:
                             {
                                 "introduction" : '',
