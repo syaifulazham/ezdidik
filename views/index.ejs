@@ -70,7 +70,7 @@
                                         <div class="f-row-right f-1 f-gap-5">
                                             <div class="btn button">Seterusnya</div>
                                             <div class="btn button">Uji Kefahaman</div>
-                                            <div class="btn button">Kuiz</div>
+                                            <div id="btnkuiz" class="btn button">Kuiz</div>
                                         </div>
                                     </p>
                                 </div>
@@ -80,7 +80,7 @@
             </div>
         </div>
     </div>
-<!--
+<!--   
     <h1>ChatGPT-3.5 Chat Interface</h1>
     <form id="chat-form">
         <input type="text" id="message-input" placeholder="Type your message here">
@@ -319,7 +319,69 @@ Kebaikan dan Keburukan Teknologi
                     
                 }); //end click
             });
+
+            d3.select('#btnkuiz').on('click', async ()=>{
+                const lecture = d3.select('.lecture').text();
+                const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: `
+                            refer to the following notes:
+                            ${lecture}
+                            create a simple comprehension objective question based on the notes in Bahasa Malaysia.
+                            return the answer in the following format:
+                            {
+                                "question": '',
+                                "options": [],
+                                "correct_answer": ''
+                            }
+                            ` })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const _msg = data.message;
+
+                        const msg = JSON.parse(_msg);
+
+                        console.log(msg);
+
+                        d3.select('#botrespond').text('Kuiz Kefahaman');
+                        displayQuestionWithOptions(msg.question, msg.options, msg.correct_answer);
+                        
+                    } else {
+                        console.error('Error from chat API');
+                        chatOutput.innerHTML += `<div>Error connecting to the chat service</div>`;
+                    }
+            })
         })
+    </script>
+
+    <script>
+    function displayQuestionWithOptions(question, options, correct_answer) {
+        const kuizDiv = d3.select('#botnotes');
+        kuizDiv.selectAll('*').remove();
+        
+        kuizDiv.append('div').html(question);
+        const kuizAns = kuizDiv.append('div');
+        
+        options.forEach((option, index) => {
+            const id = `option${index}`;
+            kuizAns.append('input')
+                .attr('type', 'radio')
+                .attr('name', 'option')
+                .attr('id', id)
+                .attr('value', option);
+            
+            kuizAns.append('label')
+                .attr('for', id)
+                .text(option);
+            
+            kuizAns.append('br'); // Break line for better readability
+        });
+    }
     </script>
 
     <script>
@@ -351,6 +413,8 @@ Kebaikan dan Keburukan Teknologi
     
             messageInput.value = ''; // Clear the input after sending
         });
+
+
     </script>
     
 </body>
